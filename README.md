@@ -1,2 +1,4 @@
-# videogame_blog
-Our blog about video games we enjoy.
+# sheeley820.github.io
+Our video game blog
+
+Welcome

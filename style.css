@@ -1,92 +1,26 @@
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-  }
-  
-  li {
-    float: left;
-  }
-  
-  li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    border-right: 1px solid #bbb;
-  }
-  
-  /* Change the link color to #111 (black) on hover */
-  li a:hover {
-    background-color: rgba(29, 117, 56, 0.534);
-  }
+nav {
+  background-color: #333;
+}
 
-  li a:last-child {
-    border-right: none;
-  }
+footer { 
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  position: fixed;
+  background-color: #333;
+}
 
-  .active {
-    background-color: rgba(101, 207, 133, 0.89);
+footer p{ 
+  color: white;
+  padding: 14px 16px 14px 16px;
+  margin: 0;
 }
 
 body {
-    padding-top: 40px;
-    margin-bottom: 55px;
-}
-img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 50%;
-  }
-  h1 {
-      text-align:center;
-  }
-  p, h1, a{
-      font-family: Geneva, Verdana, Tahoma, sans-serif;
-  }
-.smallerImage {
-  width: 20%;
-  height: 20%;
-  
-}
-.flex {
-  display:flex;
-  justify-content: center;
-  padding: 15px 10% 15px 10%;
-  cursor: pointer;
+  margin-bottom: 55px;
 }
 
-.flex img, .flex p {
-  margin: 0px 10px 0px 10px;
+.rounded-pill:hover {
+  color: white;
 }
-.flex a {
-  text-decoration: none;
-}
-
-.mainParagraph {
-    margin-left: 220px;
-    margin-right: 220px;
-}
-  footer p{ 
-    background-color: #333;
-    color: white;
-    padding: 14px 16px 14px 16px;
-    margin: 0;
-  }
-footer { 
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    position: fixed;
-}
-    

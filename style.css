@@ -53,7 +53,26 @@ img {
   p, h1, a{
       font-family: Geneva, Verdana, Tahoma, sans-serif;
   }
-p {
+.smallerImage {
+  width: 20%;
+  height: 20%;
+  
+}
+.flex {
+  display:flex;
+  justify-content: center;
+  padding: 15px 10% 15px 10%;
+  cursor: pointer;
+}
+
+.flex img, .flex p {
+  margin: 0px 10px 0px 10px;
+}
+.flex a {
+  text-decoration: none;
+}
+
+.mainParagraph {
     margin-left: 220px;
     margin-right: 220px;
 }

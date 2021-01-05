@@ -24,3 +24,11 @@ body {
 .rounded-pill:hover {
   color: white;
 }
+
+i {
+  padding-right: 5px;
+}
+
+.tag {
+  margin: 5px;
+}

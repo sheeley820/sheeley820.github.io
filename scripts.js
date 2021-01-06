@@ -1,4 +1,13 @@
 let tags = document.getElementsByClassName("tag-container")
+let tagButtons = document.getElementsByClassName("tag")
+
+const deactivateButtons = (arg) => {
+  for(let button of tagButtons) {
+    if (arg != button) {
+      button.classList.remove("active")
+    }
+  }
+}
 
 const filterFunc = function(arg) {
   for(let tag of tags) {
@@ -13,19 +22,16 @@ const filterFunc = function(arg) {
     } else {
       tag.closest(".archive-entry").classList.remove("collapse")
     }
-    console.log(tag)
   }
-  
 }
 
-//How do we retrive all the tags present
-//   - Retrieve the divs that contain the tags by giving them a tag-container class name, then go through child elements
-//Do do we identify the card that tag lives in?
-//   - container.closest(".archive-entry")
-//How do we hide those cards?
-//   - let col = document.getElementById("collapse-me").classList.remove("collapse")
-//   - let col = document.getElementById("collapse-me").classList.add("collapse")
-
-//if (a.innerText !== b.innerText) {
-  // hide the thing
-// }
+//TODO
+//-  Make the tag button look clicked or active to show what tag is actively being filtered
+//  - Add data-bs-toggle="button" to our button.
+//  FIX-ME
+//  - Two tag buttons can appear selected, even though only one tag genre is being shown
+//  - When a button is deselected (clicked twice) that tag genre is still shown.  Clicking it again should make all block posts re-appear.
+//
+//-  Have a way to show all blog posts again
+//-  Build our list of Tag buttons based on the tags that exist in the blog posts (except maybe the all tag)
+//

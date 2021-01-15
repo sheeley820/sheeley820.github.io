@@ -1,0 +1,37 @@
+.card-flip {
+    perspective: 1000px;
+}
+
+.card-flip, .front, .back {
+    width: 150px;
+    height: 150px;
+}
+
+h1, image{
+    height: 150px; 
+    width: 150px;
+}
+
+.flip {
+    transition: 0.6s;
+    transform-style: preserve-3d;
+    position: relative;
+    border: 1px solid grey;
+}
+  
+.front,
+.back {
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+  
+.front {
+    z-index: 2;
+    transform: rotateY(0deg);
+}
+  
+.back {
+    transform: rotateY(180deg);
+}

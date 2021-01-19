@@ -1,22 +1,33 @@
-let listOfElements = document.querySelectorAll(".card-flip")
+let listOfElements = $(".card-flip")
+// counting flips
+let flipCount = 0
 
-for(el of listOfElements) {
-    el.classList.toggle("flip");
-}
+// creating list of each "tile"
+$(listOfElements).toggleClass("flip")
 
+// each time a tile is clicked, turn it to it's opposite side
+// also incrementing flip count
 const flipCard = (el) => {
-    console.log("Hello")
     if (el.style.transform == "rotateY(180deg)") {
         el.style.transform = ""
+        el.classList.remove("flipped")
     } else {
         el.style.transform = "rotateY(180deg)";
-    }   
+        el.classList.add("flipped")
+    } 
+    cardClick(el)
+}
+
+
+// when reset button is clicked all cards are flipped to empty side and are randomized
+const flipAll = () => {
+    window.location.reload()
 }
 
 let pairOfCards = []
 
 const checkCard = (el) => {
-    let imgName = this.src
+    let imgName = el.src
     if (pairOfCards.length > 1) {
         pairOfCards[0] == imgName
         //Keep cards flipped over
@@ -27,7 +38,6 @@ const checkCard = (el) => {
 }
 
 
-//Function should run on "reset button" click
 let randomImg = () => {
     //each array item should be image file path
     let imgArr = ["img1", "img2", "img3", "img4", "img5", "img6", "img7", "img8", "img8", "img1", "img2", "img3", "img4", "img5", "img6", "img7"]
@@ -42,57 +52,84 @@ let randomImg = () => {
     }
     let shuffledArray = shuffleArray(imgArr)
     
-    let imageList = document.getElementsByClassName("card-img-top")
+    let imageList = $(".card-img-top").each((ind, el) => {
+        $(el).attr("src", `./images/${shuffledArray.pop()}.svg`)
+    })
+}
 
-    for(image of imageList) {
-        image.src = `./images/${shuffledArray.pop()}.svg`
+//randomizing at start
+randomImg()
+//functionality to keep cards that are matching, and flipping cards that are not
+let matchList = []
+const cardClick = function(el) {
+    let flippedCards = $(".flipped")
+    console.log(flippedCards)
+    if (flippedCards.length == 2) {
+        if($(flippedCards[0]).find("img").attr("src") == $(flippedCards[1]).find("img").attr("src")) {
+            flippedCards.each((index, el) => {
+                el.classList.add("matched")
+                el.classList.remove("flipped")
+                el.onclick = ""
+            })
+        } else {
+            
+            const itter = () => {
+                flippedCards.each((index, el) => {
+                el.style.transform = "none"
+                el.classList.remove("flipped")
+            })}
+            setTimeout(itter, 1000)
+        }
+        if ($(".matched").length == listOfElements.length) {
+
+            setTimeout(alert, 1000, "You Win!")
+        }
     }
 }
-randomImg()
+    //     // check if cards with flipped class are the same or different
+    //     // remove flip class at the end
+    //     $(".flipped").each(function ( index ) {
+    //         // console.log(index + $(this).find("img").attr("src"))
+    //         matchList.push($(this).find("img").attr("src"))
+    //     })
+    //     if (matchList[0] === matchList[1]) {
+    //         $(".flipped").each(function ( index, el) {
+    //             // make them stay
 
-    
-    // //counters for each image
-    // let imgA = 0;
-    // let imgB = 0;
-    // let imgC = 0;
-    // let imgD = 0;
-    // let imgE = 0;
-    // let imgF = 0;
-    // let imgG = 0;
-    // let imgH = 0;
+    //             // but also remove class flipped
+    //             el.classList.remove("flipped")
+    //         })
+    //     } else {
+    //         $(".flipped").each(function ( index, el ) {
+    //             // make them flip back over
+    //             $(el).css("transform", "none")
+    //             // but also remove class flipped
+    //             el.classList.remove("flipped")
+    //         })
+    //     }
+    // }
 
-    // //initializing counter before loops
-    // let index = 0;
-    
-    // //loop through once for each card, setting a random image
-    // let i = 0
-    // let j = 0
-    // while (i <= 16) {
-    //     //imageToSet will be a random image from the array
-    //     let imageToSet = images[Math.floor(Math.random()*imgArr.length)]
-    //     //the src of each image in order will be set to imageToSet
-    //     document.getElementById(`img${i}`).src = imageToSet;
-
-    //     //this loop should add one to the counter checking each image's source
-    //     while (j <= 16) {
-    //         switch(document.getElementById(`img${j}`).src) {
-    //             case "img0":
-    //                 imgA++
-    //                 break;
-    //             case "img1":
-    //                 imgB++
-    //                 break;
-    //             //add other image cases
+    //     for (el of listOfElements) {
+    //         if (el.style.transform == "rotateY(180deg)") {
+    //             matchList.push(el)
     //         }
     //     }
-    //     // checking if the counter for each image is over 1, in which case that image is removed from the array and random element is preserved
-    //     if (imgA > 1) {
-    //         index = imgArr.indexOf(imgA)
-    //         imgArr.splice(index, 1)
-    //     } else if (imgB > 1) {
-    //         index = imgArr.indexOf(imgB)
-    //         imgArr.splice(index, 1)
-    //     } // at last else.. do nothing
+    //     // check images of two items in matchList, if they are the same stay flipped, if not flip back
+    //     console.log($(matchList[0]).find("img").attr("src"))
+    //     console.log($(matchList[1]).find("img").attr("src"))
+    //     if ($(matchList[0]).find("img").attr("src") === $(matchList[1]).find("img").attr("src")) {
+    //         console.log("match")
+    //     } else {
+    //         console.log("no match")
+    //     }
+    // //reset flipcount
+    // flipCount = 0;
+    // matchList = []
 
-    //     i++
-    // }
+
+//todo
+// add button for reset - done
+// when two cards are flipped, keep them if they are the same, else flip them over
+// display a message when all cards are flipped
+// maybe a show all button
+// rewrite with jquery

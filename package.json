@@ -1,0 +1,24 @@
+{
+  "name": "sheeley820.github.io",
+  "version": "1.0.0",
+  "description": "Our video game blog",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sheeley820/sheeley820.github.io.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sheeley820/sheeley820.github.io/issues"
+  },
+  "homepage": "https://github.com/sheeley820/sheeley820.github.io#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

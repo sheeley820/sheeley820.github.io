@@ -23,4 +23,8 @@ app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
 // included bundle where archives.js previously were
 // changed href on cards to include stub query
 
+//TODO
+// for some reason heroku remote doesn't work still
+// only link that doesnt work is going from matching game > archive post
+// I think this is because it is looking for document.title = home OR archive 
 

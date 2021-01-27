@@ -13,10 +13,11 @@ let divider = document.getElementById("dropDiv")
 // // if statement looks at document.title and decides whether we are on a "main" or "archive" page and sorts through appropriate list
 // // this is necessary because linking to an archive page from an archive page will require a different path due to archive pages being hosted in a subdirectory
 window.onload = () => {
-  if (document.title === 'Home' || document.title === 'Archive') {
-  for (item of blogList) {
-      divider.insertAdjacentHTML('afterend', buildArchiveElements(item, true))
-      }
+//   if (document.title === 'Home' || document.title === 'Archive' || document.title === "Matching Game") {
+    if(!document.documentURI.includes('Template')) {
+        for (item of blogList) {
+            divider.insertAdjacentHTML('afterend', buildArchiveElements(item, true))
+        }
   } else {
       for (item of blogList) {
           divider.insertAdjacentHTML('afterend', buildArchiveElements(item, false))

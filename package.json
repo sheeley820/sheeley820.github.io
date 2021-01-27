@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/sheeley820/sheeley820.github.io#readme",
   "dependencies": {
+    "browserify": "^17.0.0",
     "express": "^4.17.1"
   },
   "engines": {

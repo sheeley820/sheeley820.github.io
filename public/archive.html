@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>title</title>
+    <title>Archive</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/style.css"> 
@@ -21,9 +21,8 @@
               <a class="nav-link dropdown-toggle active" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Archive</a>
               <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
                 <li><a class="dropdown-item" href="archive.html">All Archived Posts</a></li>
-                <li><hr class="dropdown-divider" id="archiveDropdownDivider"></li>
-                <li><a class="dropdown-item" href="./archive/walkthrough.html">Red Dead Redemption Walkthrough</a></li>
-                <li><a class="dropdown-item" href="./archive/devStories.html">Red Dead Redemption Development Stories</a></li>
+                <li id="dropDiv"><hr class="dropdown-divider" id="archiveDropdownDivider"></li>
+                
               </ul>
             </li>
             <li class="nav-item">
@@ -45,7 +44,7 @@
       <!-- Archive Entry -->
       <div class="row mt-3 archive-entry">
         <div class="col-md-12 mx-auto d-block">
-          <div class="card" onclick="location.href='walkthrough.html';" style="cursor: pointer;">
+          <div class="card" onclick="location.href='./archive/archiveTemplate.html?stub=walkthroughStub';" style="cursor: pointer;">
             <div class="row g-0">
               <div class="col-md-4">
                 <img class="img-thumbnail rounded-3" src="images/reddeadimage.jpg" alt="Red Dead Redemption">
@@ -69,7 +68,7 @@
 
       <div class="row mt-3 archive-entry">
         <div class="col-md-12 mx-auto d-block">
-          <div class="card" onclick="location.href='devStories.html';" style="cursor: pointer;">
+          <div class="card" onclick="location.href='./archive/archiveTemplate.html?stub=devStoriesStub';" style="cursor: pointer;">
             <div class="row g-0">
               <div class="col-md-4">
                 <img class="img-thumbnail rounded-3" src="images/rockstarlogo.jpg" alt="Red Dead Redemption">
@@ -93,6 +92,7 @@
     <footer>
       <p>Copyright 2020</p>
     </footer>
-    <script src="scripts/scripts.js"></script>
+    <script src="./scripts/tags.js"></script>
+    <script src="./scripts/bundle.js"></script>
   </body>
 </html>

@@ -44,7 +44,13 @@ client.connect(function(err) {
         archiveCollection.insertOne(post, function(err, result) {
             console.log(result)
             console.log("Inserted Document")
-            res.json(JSON.stringify(result))
+            if(result.result.ok == 1) {
+                res.json({
+                    "result": "ok",
+                    "post": result.ops[0]
+                })
+            }
+            
         })
     })
   });

@@ -1,4 +1,4 @@
-const blogList = require("./archiveclass").blogList
+// const blogList = require("./archiveclass").blogList
 
 const buildArchiveElements = (archiveItem, needsPath) => {
     let prependPath = needsPath ? "./archive/" : ""
@@ -19,14 +19,19 @@ let herokuURL = "https://hidden-shore-45779.herokuapp.com/archive"
 // // this is necessary because linking to an archive page from an archive page will require a different path due to archive pages being hosted in a subdirectory
 window.onload = () => {
 //   if (document.title === 'Home' || document.title === 'Archive' || document.title === "Matching Game") {
-    if(!document.documentURI.includes('Template')) {
-        for (item of blogList) {
-            divider.insertAdjacentHTML('afterend', buildArchiveElements(item, true))
-        }
-  } else {
-      for (item of blogList) {
-          divider.insertAdjacentHTML('afterend', buildArchiveElements(item, false))
-          }
-  } 
+    let blogList
+    $.get(herokuURL, function(data) {
+        console.log(data)
+        blogList = data
+    })
+//     if(!document.documentURI.includes('Template')) {
+//         for (item of blogList) {
+//             divider.insertAdjacentHTML('afterend', buildArchiveElements(item, true))
+//         }
+//   } else {
+//       for (item of blogList) {
+//           divider.insertAdjacentHTML('afterend', buildArchiveElements(item, false))
+//           }
+//   } 
 }
 

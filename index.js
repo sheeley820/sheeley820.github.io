@@ -2,12 +2,54 @@ const PORT = process.env.PORT || 5000;
 const express = require('express')
 const archives = require("./public/scripts/archiveclass.js").blogList
 const bodyParser = require("body-parser")
+const mongoose = require("mongoose")
+const mongodb = require("mongodb")
 let app = express()
 const cors = require('cors')
+const url = process.env.MONGO_URI_BLOG
+let MongoClient = mongodb.MongoClient
+let BlogPost = require('./schema.js').BlogPost
+
 
 app.use(express.static(__dirname + "/public"))
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
+
+const dbName = 'Videogameblog'
+const client = new MongoClient(url);
+
+client.connect(function(err) {
+    console.log('Connected successfully to server');
+  
+    const db = client.db(dbName);
+  
+    const archiveCollection = db.collection("archives")
+
+    app.get("/archive", (req, res) => {
+        archiveCollection.find({}).toArray(function(err, docs) {
+            res.json(docs)
+        })
+    })
+
+    app.post("/archive", (req, res) => {
+        const post = new BlogPost({
+            title: req.body.title,
+            body: req.body.body,
+            imgURL: req.body.imgURL,
+            tags: req.body.tags,
+            date: Date.now()
+          })
+        //   res.json(JSON.stringify(post))
+          
+        archiveCollection.insertOne(post, function(err, result) {
+            console.log(result)
+            console.log("Inserted Document")
+            res.json(JSON.stringify(result))
+        })
+    })
+  });
+
+
 
 
 app.use(function(req, res, next) {
@@ -21,13 +63,7 @@ app.use(cors())
 
 app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"))
 
-app.get("/archive", (req, res) => {
-    let obj = {"archive": []}
-    for (item of archives) {
-	  obj.archive.push({"title": item.title})
-    }
-    res.json(obj)
-})
+
 
 let users = ["chris", "chris123"]
 

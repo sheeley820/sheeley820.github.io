@@ -6,6 +6,11 @@ const buildArchiveElements = (archiveItem, needsPath) => {
 }
 
 let divider = document.getElementById("dropDiv")
+let herokuURL = "https://hidden-shore-45779.herokuapp.com/archive"
+// $.get(herokuURL, () => {
+// let listOfBlop
+//  do something with the response
+// })
 
 
 // //function executing on load to populate archive posts into dropdown menu

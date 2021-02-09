@@ -14,6 +14,13 @@ let BlogPost = require('./schema.js').BlogPost
 app.use(express.static(__dirname + "/public"))
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
+app.use(function(req, res, next) {
+    let origin = req.headers.origin || '*';
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+app.use(cors())
 
 const dbName = 'Videogameblog'
 const client = new MongoClient(url);
@@ -28,7 +35,7 @@ client.connect(function(err) {
   
     const archiveCollection = db.collection("archives")
 
-    const buildArchives = () => {
+    const buildArchiveElements = () => {
         archiveCollection.find({}).toArray(function(err, docs) {
         listOfBlogs = docs
         })
@@ -37,7 +44,7 @@ client.connect(function(err) {
 
 
     app.get("/archive", (req, res) => {
-        res.json(listOfBlogs)
+        res.send(listOfBlogs)
     })
 
     //endpoint to insert blogposts to db
@@ -70,17 +77,6 @@ client.connect(function(err) {
         archiveCollection.deleteMany({ })
     })
 });
-
-
-
-
-app.use(function(req, res, next) {
-    let origin = req.headers.origin || '*';
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-  });
-app.use(cors())
 
 
 app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"))

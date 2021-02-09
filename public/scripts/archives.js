@@ -19,11 +19,17 @@ let herokuURL = "https://hidden-shore-45779.herokuapp.com/archive"
 // // this is necessary because linking to an archive page from an archive page will require a different path due to archive pages being hosted in a subdirectory
 window.onload = () => {
 //   if (document.title === 'Home' || document.title === 'Archive' || document.title === "Matching Game") {
-    let blogList
-    $.get(herokuURL, function(data) {
-        console.log(data)
-        blogList = data
-    })
+    let blogList;
+
+    // $.get(herokuURL, function(data) {
+    //     console.log(data)
+    //     blogList = data
+    // })
+
+    // $.ajax({
+    //     url: herokuURL,
+
+    // })
 //     if(!document.documentURI.includes('Template')) {
 //         for (item of blogList) {
 //             divider.insertAdjacentHTML('afterend', buildArchiveElements(item, true))

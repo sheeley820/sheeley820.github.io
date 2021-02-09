@@ -18,6 +18,9 @@ app.use(bodyParser.json())
 const dbName = 'Videogameblog'
 const client = new MongoClient(url);
 
+// object to hold blog posts from database
+let listOfBlogs = {}
+
 client.connect(function(err) {
     console.log('Connected successfully to server');
   
@@ -25,12 +28,19 @@ client.connect(function(err) {
   
     const archiveCollection = db.collection("archives")
 
-    app.get("/archive", (req, res) => {
+    const buildArchives = () => {
         archiveCollection.find({}).toArray(function(err, docs) {
-            res.json(docs)
+        listOfBlogs = docs
         })
+    }
+    buildArchiveElements()
+
+
+    app.get("/archive", (req, res) => {
+        res.json(listOfBlogs)
     })
 
+    //endpoint to insert blogposts to db
     app.post("/archive", (req, res) => {
         const post = new BlogPost({
             title: req.body.title,
@@ -50,10 +60,16 @@ client.connect(function(err) {
                     "post": result.ops[0]
                 })
             }
-            
+            buildArchiveElements()
         })
     })
-  });
+
+    //endpoint to delete all archive entries
+    app.delete('/deleteAllArchives', (req, res) => {
+        //removes ALL documents
+        archiveCollection.deleteMany({ })
+    })
+});
 
 
 

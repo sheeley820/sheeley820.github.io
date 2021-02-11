@@ -37,16 +37,16 @@ $("#uname").keyup(function (event) {
     jQuery.post('http://localhost:5000/userCheck', { "userCheck" : this.value}).done(function () {
         let field = document.getElementById("uname")
         $(".popover-body").text("Username is available!")
-        $(".popover").css("border-color", "#dc3545")
-        // field.dataset.bsContent = "Username is available!"
-        // buildPopover()
+        $(".popover").css("border-color","#198754" )
+        field.dataset.bsContent = "Username is available!"
+        buildPopover()
         $(this).click()
     }).fail(function () {
         let field = document.getElementById("uname")
-        $(".popover").css("border-color", "#198754")
+        $(".popover").css("border-color", "#dc3545")
         $(".popover-body").text("Please Enter a Valid Username")
-        // field.dataset.bsContent = "Please Enter a Valid Username"
-        // buildPopover()
+        field.dataset.bsContent = "Please Enter a Valid Username"
+        buildPopover()
         $(this).click()
     })
 })

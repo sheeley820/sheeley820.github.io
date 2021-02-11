@@ -44,7 +44,16 @@ client.connect(function(err) {
 
 
     app.get("/archive", (req, res) => {
-        res.send(listOfBlogs)
+        console.log(`Params: ${req.query}`)
+        console.log(`PostID: ${req.query.postID}`)
+        console.log(`Request: ${req}`)
+        if (!req.query.postID) {
+            res.send(listOfBlogs)
+        } else {
+            res.send(listOfBlogs.filter((post) => {
+                return post._id == req.query.postID
+            }))
+        }
     })
 
     //endpoint to insert blogposts to db

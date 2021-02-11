@@ -8,13 +8,26 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../css/style.css"> 
     <link href="../css/all.css" rel="stylesheet">
-    <script> 
+    <script>
+      import buildHTML from "templateBuilder.js"
       $(function(){
         let page = window.location.search
         let regEx = /=.*/g
         let result = page.match(regEx)[0].slice(1)
-        $("#includedContent").load(`${result}.html`); 
-      });
+        // $("#includedContent").load(`${result}.html`);
+        const settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "https://hidden-shore-45779.herokuapp.com/archive",
+            "method": "GET",
+            "headers": {},
+            "query": "postID=???"
+        };
+
+    $.ajax(settings).done(function (response) {
+        $("#includedContent").append(buildHTML(response))
+      })
+    }
       </script>
   </head>
 <body>
@@ -45,6 +58,6 @@
     <footer>
       <p>Copyright 2020</p>
     </footer> 
-    <script src="../scripts/bundle.js"></script>
+    <script src="../scripts/archives.js"></script>
 </body>
 </html>

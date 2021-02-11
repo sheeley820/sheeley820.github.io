@@ -9,6 +9,9 @@ const cors = require('cors')
 const url = process.env.MONGO_URI_BLOG
 let MongoClient = mongodb.MongoClient
 let BlogPost = require('./schema.js').BlogPost
+const passport = require("passport")
+var GitHubStrategy = require('passport-github').Strategy;
+
 
 
 app.use(express.static(__dirname + "/public"))
@@ -21,6 +24,34 @@ app.use(function(req, res, next) {
     next();
   });
 app.use(cors())
+passport.use(new GitHubStrategy({
+    clientID: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    callbackURL: "https://hidden-shore-45779.herokuapp.com/auth/github/callback"
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    User.findOrCreate({ githubId: profile.id }, function (err, user) {
+      if (err) {
+          return console.error(err)
+      }
+        return cb(err, user);
+    });
+  }
+));
+
+passport.serializeUser(function(user, cb) {
+    cb(null, user);
+  });
+  
+passport.deserializeUser(function(obj, cb) {
+    cb(null, obj);
+});
+
+// Initialize Passport and restore authentication state, if any, from the
+// session.
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 const dbName = 'Videogameblog'
 const client = new MongoClient(url);
@@ -108,6 +139,15 @@ app.post('/userCheck', (req, res) => {
 app.post("/form", (req, res) => {
     res.json(req.body)
 })
+
+app.route('/auth/github')
+    .get(passport.authenticate('github'))
+
+app.route('/auth/github/callback')
+    .get(passport.authenticate('github', { failureRedirect: '/' }), (req,res) => {
+    req.session.user_id = req.user.id
+    res.redirect('/userHome');
+});
 
 
 

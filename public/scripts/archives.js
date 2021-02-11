@@ -27,7 +27,6 @@ function getBlogPost(postId) {
 }
 
 window.onload = () => {
-//   if (document.title === 'Home' || document.title === 'Archive' || document.title === "Matching Game") {
 
     const settings = {
         "async": true,
@@ -50,6 +49,5 @@ window.onload = () => {
                 }
         } 
     });
-    
 }
 

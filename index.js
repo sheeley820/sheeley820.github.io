@@ -98,7 +98,7 @@ client.connect(function(err) {
 });
 
 //USER LOGIN CODE///////////////////
-mongoose.connect(MONGO_URI_BLOG, 
+mongoose.connect(url, 
     { useNewUrlParser: true, useUnifiedTopology: true})
 
 const userSchema = mongoose.Schema;

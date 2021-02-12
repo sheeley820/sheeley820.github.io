@@ -1,5 +1,13 @@
-const baseUrl = require('../../environment.js').baseUrl
-console.log(baseUrl)
+var baseUrl
+const getbaseURL = () => {
+    if (process.env.ENVIRONMENT == "heroku") {
+        baseUrl = "https://hidden-shore-45779.herokuapp.com/"
+    } else {
+        baseUrl = "http://127.0.0.1:5000/"
+    }
+}
+getbaseURL()
+
 const buildArchiveElements = (archiveItem, needsPath) => {
     let prependPath = needsPath ? "./archive/" : ""
     return `<li><a class="dropdown-item" href="${prependPath}archiveTemplate.html?stub=${archiveItem._id}">${archiveItem.title}</a></li>`

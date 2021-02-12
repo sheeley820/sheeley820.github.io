@@ -69,18 +69,17 @@
                   <form>
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username"></input>
-                    <br>
-                    <label for="password">Password</label>
-                    <input type="text" id="password" name="password"></input>
                   </form>
               </div>
-              <button type="submit" id="gitLogin">Login with Github</button>
+              <form action="/login" method="POST">
+                <label>Username:</label>
+                <input type="text" name='username'/>
+                <label>Password</label>
+                <input type="password" name="password" required/>
+              </form>
               <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
               </div>
-              <form action="https://hidden-shore-45779.herokuapp.com/auth/github">
-                <input type="submit" value="Login with github" />
-            </form>
           </div>
       </div>
   </div>

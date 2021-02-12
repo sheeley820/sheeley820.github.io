@@ -10,12 +10,16 @@ const url = process.env.MONGO_URI_BLOG
 let MongoClient = mongodb.MongoClient
 let BlogPost = require('./schema.js').BlogPost
 const passport = require("passport")
-var GitHubStrategy = require('passport-github').Strategy;
+const LocalStrategy = require("passport-local").Strategy
+const passportLocalMongoose = require('passport-local-mongoose')
+const connectEnsureLogin = require('connect-ensure-login');
+
+
 
 
 
 app.use(express.static(__dirname + "/public"))
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 app.use(function(req, res, next) {
     let origin = req.headers.origin || '*';
@@ -24,31 +28,6 @@ app.use(function(req, res, next) {
     next();
   });
 app.use(cors())
-passport.use(new GitHubStrategy({
-    clientID: process.env.GITHUB_CLIENT_ID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: "https://hidden-shore-45779.herokuapp.com/auth/github/callback"
-  },
-  function(accessToken, refreshToken, profile, cb) {
-    User.findOrCreate({ githubId: profile.id }, function (err, user) {
-      if (err) {
-          return console.error(err)
-      }
-        return cb(err, user);
-    });
-  }
-));
-
-passport.serializeUser(function(user, cb) {
-    cb(null, user);
-  });
-  
-passport.deserializeUser(function(obj, cb) {
-    cb(null, obj);
-});
-
-// Initialize Passport and restore authentication state, if any, from the
-// session.
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -118,6 +97,66 @@ client.connect(function(err) {
     })
 });
 
+//USER LOGIN CODE///////////////////
+mongoose.connect(MONGO_URI_BLOG, 
+    { useNewUrlParser: true, useUnifiedTopology: true})
+
+const userSchema = mongoose.Schema;
+const UserDetail = new userSchema({
+    user: String,
+    password: String
+})
+
+UserDetail.plugin(passportLocalMongoose)
+const UserDetails = mongoose.model('userInfo', UserDetail, 'userInfo')
+passport.use(UserDetails.createStrategy())
+
+passport.serializeUser(UserDetails.serializeUser())
+passport.deserializeUser(UserDetails.deserializeUser())
+
+app.post('/login', (req, res, next) => {
+    passport.authenticate('local', 
+    (err, user, info) => {
+        if (err) {
+            return next(err)
+        }
+
+        if (!user) {
+            return res.redirect('/login?info=' + info)
+        }
+
+        req.logIn(user, function(err) {
+            if (err) {
+                return next(err)
+            }
+
+            return res.redirect('/')
+        })
+
+    })(req, res, next)
+})
+
+app.get('/login',
+    (req, res) => res.sendFile('/userHome.html',
+    {root: __dirname})
+)
+
+app.get('/',
+  connectEnsureLogin.ensureLoggedIn(),
+  (req, res) => res.sendFile('/index2.html', {root: __dirname})
+);
+
+app.get('/private',
+  connectEnsureLogin.ensureLoggedIn(),
+  (req, res) => res.sendFile('/private.html', {root: __dirname})
+);
+
+app.get('/user',
+  connectEnsureLogin.ensureLoggedIn(),
+  (req, res) => res.send({user: req.user})
+);
+
+//////////////////////////
 
 app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"))
 
@@ -140,14 +179,18 @@ app.post("/form", (req, res) => {
     res.json(req.body)
 })
 
-app.route('/auth/github')
-    .get(passport.authenticate('github'))
+app.get("/userHome", (req, res) => {
+    res.sendFile('./public/userHome.html')
+})
 
-app.route('/auth/github/callback')
-    .get(passport.authenticate('github', { failureRedirect: '/' }), (req,res) => {
-    req.session.user_id = req.user.id
-    res.redirect('/userHome');
-});
+// app.route('/auth/github')
+//     .get(passport.authenticate('github'))
+
+// app.route('/auth/github/callback')
+//     .get(passport.authenticate('github', { failureRedirect: '/' }), (req,res) => {
+//     req.session.user_id = req.user.id
+//     res.redirect('/userHome');
+// });
 
 
 

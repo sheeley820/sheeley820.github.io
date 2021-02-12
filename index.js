@@ -122,7 +122,7 @@ app.post('/login', (req, res, next) => {
         }
 
         if (!user) {
-            return res.redirect('/login?info=' + info)
+            return res.redirect('/')
         }
 
         req.logIn(user, function(err) {
@@ -130,37 +130,24 @@ app.post('/login', (req, res, next) => {
                 return next(err)
             }
 
-            return res.redirect('/')
+            return res.redirect('/userHome')
         })
 
     })(req, res, next)
 })
 
-app.get('/login',
-    (req, res) => res.sendFile('/public/login.html',
+app.get('/userHome',
+    (req, res) => res.sendFile('/public/userHome.html',
     {root: __dirname})
 )
 
-app.get('/',
-  connectEnsureLogin.ensureLoggedIn(),
-  (req, res) => res.sendFile('/public/index2.html', {root: __dirname})
-);
 
-app.get('/private',
-  connectEnsureLogin.ensureLoggedIn(),
-  (req, res) => res.sendFile('/public/private.html', {root: __dirname})
-);
+UserDetails.register({username:'paul', active: false}, 'paul');
 
-app.get('/user',
-  connectEnsureLogin.ensureLoggedIn(),
-  (req, res) => res.send({user: req.user})
-);
 
 //////////////////////////
 
 app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"))
-
-
 
 let users = ["chris", "chris123"]
 
@@ -179,9 +166,6 @@ app.post("/form", (req, res) => {
     res.json(req.body)
 })
 
-app.get("/userHome", (req, res) => {
-    res.sendFile('./public/userHome.html')
-})
 
 // app.route('/auth/github')
 //     .get(passport.authenticate('github'))

@@ -137,7 +137,7 @@ app.post('/login', (req, res, next) => {
 })
 
 app.get('/login',
-    (req, res) => res.sendFile('/userHome.html',
+    (req, res) => res.sendFile('/login.html',
     {root: __dirname})
 )
 

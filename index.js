@@ -141,10 +141,6 @@ app.get('/userHome',
     {root: __dirname})
 )
 
-
-UserDetails.register({username:'paul', active: false}, 'paul');
-
-
 //////////////////////////
 
 app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"))

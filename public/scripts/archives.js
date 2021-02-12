@@ -1,5 +1,5 @@
-// const blogList = require("./archiveclass").blogList
-
+const baseUrl = require('../../environment.js').baseUrl
+console.log(baseUrl)
 const buildArchiveElements = (archiveItem, needsPath) => {
     let prependPath = needsPath ? "./archive/" : ""
     return `<li><a class="dropdown-item" href="${prependPath}archiveTemplate.html?stub=${archiveItem._id}">${archiveItem.title}</a></li>`

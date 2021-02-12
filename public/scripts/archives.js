@@ -1,12 +1,5 @@
-var baseUrl
-const getbaseURL = () => {
-    if (process.env.ENVIRONMENT == "heroku") {
-        baseUrl = "https://hidden-shore-45779.herokuapp.com/"
-    } else {
-        baseUrl = "http://127.0.0.1:5000/"
-    }
-}
-getbaseURL()
+let baseUrl = window.location.host
+console.log(baseUrl)
 
 const buildArchiveElements = (archiveItem, needsPath) => {
     let prependPath = needsPath ? "./archive/" : ""

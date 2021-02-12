@@ -137,18 +137,18 @@ app.post('/login', (req, res, next) => {
 })
 
 app.get('/login',
-    (req, res) => res.sendFile('/login.html',
+    (req, res) => res.sendFile('/public/login.html',
     {root: __dirname})
 )
 
 app.get('/',
   connectEnsureLogin.ensureLoggedIn(),
-  (req, res) => res.sendFile('/index2.html', {root: __dirname})
+  (req, res) => res.sendFile('/public/index2.html', {root: __dirname})
 );
 
 app.get('/private',
   connectEnsureLogin.ensureLoggedIn(),
-  (req, res) => res.sendFile('/private.html', {root: __dirname})
+  (req, res) => res.sendFile('/public/private.html', {root: __dirname})
 );
 
 app.get('/user',

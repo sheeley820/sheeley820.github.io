@@ -1,18 +1,12 @@
 const PORT = process.env.PORT || 5000;
 const express = require('express')
-const archives = require("./public/scripts/archiveclass.js").blogList
 const bodyParser = require("body-parser")
 const mongoose = require("mongoose")
 const mongodb = require("mongodb")
 let app = express()
-const cors = require('cors')
 const url = process.env.MONGO_URI_BLOG
 let MongoClient = mongodb.MongoClient
 let {BlogPost, buildBlogPostObject} = require('./schema.js')
-const passport = require("passport")
-const LocalStrategy = require("passport-local").Strategy
-const passportLocalMongoose = require('passport-local-mongoose')
-const connectEnsureLogin = require('connect-ensure-login');
 const bcrypt = require('bcrypt')
 const requestHeaderCallback = function(req, res, next) {
             let origin = req.headers.origin || '*';
@@ -20,18 +14,17 @@ const requestHeaderCallback = function(req, res, next) {
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
             next();
         }
+
+
 const dbName = 'Videogameblog'
 const client = new MongoClient(url);
-let listOfBlogs = {}
 
+let listOfBlogs = {}
 
 app.use(express.static(__dirname + "/public"),
         bodyParser.urlencoded({extended: true}),
         bodyParser.json(),
         requestHeaderCallback,
-        cors(),
-        passport.initialize(),
-        passport.session()
 )
 
 client.connect(function(err) {
@@ -128,52 +121,6 @@ client.connect(function(err) {
 
 });
 
-//USER LOGIN CODE///////////////////
-// mongoose.connect(url, 
-//     { useNewUrlParser: true, useUnifiedTopology: true})
-
-// const userSchema = mongoose.Schema;
-// const UserDetail = new userSchema({
-//     user: String,
-//     password: String
-// })
-
-// UserDetail.plugin(passportLocalMongoose)
-// const UserDetails = mongoose.model('userInfo', UserDetail, 'userInfo')
-// passport.use(UserDetails.createStrategy())
-
-// passport.serializeUser(UserDetails.serializeUser())
-// passport.deserializeUser(UserDetails.deserializeUser())
-
-// app.post('/login', (req, res, next) => {
-//     passport.authenticate('local', 
-//     (err, user, info) => {
-//         if (err) {
-//             return next(err)
-//         }
-
-//         if (!user) {
-//             return res.redirect('/')
-//         }
-
-//         req.logIn(user, function(err) {
-//             if (err) {
-//                 return next(err)
-//             }
-
-//             return res.redirect('/userHome')
-//         })
-
-//     })(req, res, next)
-// })
-
-// app.get('/userHome',
-//     (req, res) => res.sendFile('/public/userHome.html',
-//     {root: __dirname})
-// )
-
-//////////////////////////
-
 app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"))
 
 let users = ["chris", "chris123"]
@@ -192,18 +139,6 @@ app.post('/userCheck', (req, res) => {
 app.post("/form", (req, res) => {
     res.json(req.body)
 })
-
-
-// app.route('/auth/github')
-//     .get(passport.authenticate('github'))
-
-// app.route('/auth/github/callback')
-//     .get(passport.authenticate('github', { failureRedirect: '/' }), (req,res) => {
-//     req.session.user_id = req.user.id
-//     res.redirect('/userHome');
-// });
-
-
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
 

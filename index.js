@@ -8,35 +8,31 @@ let app = express()
 const cors = require('cors')
 const url = process.env.MONGO_URI_BLOG
 let MongoClient = mongodb.MongoClient
-let BlogPost = require('./schema.js').BlogPost
+let {BlogPost, buildBlogPostObject} = require('./schema.js')
 const passport = require("passport")
 const LocalStrategy = require("passport-local").Strategy
 const passportLocalMongoose = require('passport-local-mongoose')
 const connectEnsureLogin = require('connect-ensure-login');
 const bcrypt = require('bcrypt')
-
-
-app.use(express.static(__dirname + "/public"))
-app.use(bodyParser.urlencoded({extended: true}))
-app.use(bodyParser.json())
-app.use(function(req, res, next) {
-    let origin = req.headers.origin || '*';
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-  });
-app.use(cors())
-app.use(passport.initialize());
-app.use(passport.session());
-
-
+const requestHeaderCallback = function(req, res, next) {
+            let origin = req.headers.origin || '*';
+            res.setHeader('Access-Control-Allow-Origin', origin);
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            next();
+        }
 const dbName = 'Videogameblog'
 const client = new MongoClient(url);
-
-// object to hold blog posts from database
 let listOfBlogs = {}
 
 
+app.use(express.static(__dirname + "/public"),
+        bodyParser.urlencoded({extended: true}),
+        bodyParser.json(),
+        requestHeaderCallback,
+        cors(),
+        passport.initialize(),
+        passport.session()
+)
 
 client.connect(function(err) {
     console.log('Connected successfully to server');
@@ -44,7 +40,6 @@ client.connect(function(err) {
     const db = client.db(dbName);
   
     const archiveCollection = db.collection("archives")
-    
 
     const buildArchiveElements = () => {
         archiveCollection.find({}).toArray(function(err, docs) {
@@ -52,7 +47,6 @@ client.connect(function(err) {
         })
     }
     buildArchiveElements()
-
 
     app.get("/archive", (req, res) => {
         console.log(`Params: ${req.query}`)
@@ -69,14 +63,7 @@ client.connect(function(err) {
 
     //endpoint to insert blogposts to db
     app.post("/archive", (req, res) => {
-        const post = new BlogPost({
-            title: req.body.title,
-            body: req.body.body,
-            imgURL: req.body.imgURL,
-            tags: req.body.tags,
-            date: Date.now()
-          })
-        //   res.json(JSON.stringify(post))
+        const post = buildBlogPostObject(req.body)
           
         archiveCollection.insertOne(post, function(err, result) {
             console.log(result)

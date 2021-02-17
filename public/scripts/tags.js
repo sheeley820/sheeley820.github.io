@@ -13,14 +13,12 @@ const filterFunc = function(arg) {
   for(let tag of tags) {
     let tagFound = false;
     for(child of tag.children) {
-      if (arg.innerText === child.innerText) {
-        tagFound = true
-      }
+      tagFound = arg.innerText === child.innerText
     }
-    if (!tagFound) {
-      tag.closest(".archive-entry").classList.add("collapse")
-    } else {
+    if (tagFound) {
       tag.closest(".archive-entry").classList.remove("collapse")
+    } else {
+      tag.closest(".archive-entry").classList.add("collapse")
     }
   }
 }

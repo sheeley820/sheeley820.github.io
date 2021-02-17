@@ -13,9 +13,7 @@ const passport = require("passport")
 const LocalStrategy = require("passport-local").Strategy
 const passportLocalMongoose = require('passport-local-mongoose')
 const connectEnsureLogin = require('connect-ensure-login');
-
-
-
+const bcrypt = require('bcrypt')
 
 
 app.use(express.static(__dirname + "/public"))
@@ -38,12 +36,15 @@ const client = new MongoClient(url);
 // object to hold blog posts from database
 let listOfBlogs = {}
 
+
+
 client.connect(function(err) {
     console.log('Connected successfully to server');
   
     const db = client.db(dbName);
   
     const archiveCollection = db.collection("archives")
+    
 
     const buildArchiveElements = () => {
         archiveCollection.find({}).toArray(function(err, docs) {
@@ -95,51 +96,94 @@ client.connect(function(err) {
         //removes ALL documents
         archiveCollection.deleteMany({ })
     })
+
+    app.post('/login' , (req, res) => {
+        const userCollection = db.collection("users")
+        userCollection.findOne({"username" : req.body.username}, function (err, result) {
+            
+            if (err) console.error(err)
+
+            console.log(result)
+
+            bcrypt.compare(req.body.password, result.password, function(err, passMatchResult){
+
+                if (result == null) {
+                    console.log("user not found")
+                    res.sendStatus(400)
+                } else if(result.username && passMatchResult) {
+                    console.log("username found")
+                    return res.sendStatus(200)
+                } else {
+                    console.log("password doesn't match")
+                    res.sendStatus(400)
+                }
+            }) 
+        })        
+    })
+    
+    app.post('/register', (req, res) => {
+        const userCollection = db.collection("users")
+        const saltRounds = 10;
+
+        bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+            if (err) console.error(err)
+            userCollection.insertOne({
+                "username" : req.body.username,
+                "password" : hash
+            }, (err, result) => {
+                if (err) console.error(err)
+                console.log(result)
+                res.sendStatus(200)
+            })
+        })
+
+    })
+
 });
 
 //USER LOGIN CODE///////////////////
-mongoose.connect(url, 
-    { useNewUrlParser: true, useUnifiedTopology: true})
+// mongoose.connect(url, 
+//     { useNewUrlParser: true, useUnifiedTopology: true})
 
-const userSchema = mongoose.Schema;
-const UserDetail = new userSchema({
-    user: String,
-    password: String
-})
+// const userSchema = mongoose.Schema;
+// const UserDetail = new userSchema({
+//     user: String,
+//     password: String
+// })
 
-UserDetail.plugin(passportLocalMongoose)
-const UserDetails = mongoose.model('userInfo', UserDetail, 'userInfo')
-passport.use(UserDetails.createStrategy())
+// UserDetail.plugin(passportLocalMongoose)
+// const UserDetails = mongoose.model('userInfo', UserDetail, 'userInfo')
+// passport.use(UserDetails.createStrategy())
 
-passport.serializeUser(UserDetails.serializeUser())
-passport.deserializeUser(UserDetails.deserializeUser())
+// passport.serializeUser(UserDetails.serializeUser())
+// passport.deserializeUser(UserDetails.deserializeUser())
 
-app.post('/login', (req, res, next) => {
-    passport.authenticate('local', 
-    (err, user, info) => {
-        if (err) {
-            return next(err)
-        }
+// app.post('/login', (req, res, next) => {
+//     passport.authenticate('local', 
+//     (err, user, info) => {
+//         if (err) {
+//             return next(err)
+//         }
 
-        if (!user) {
-            return res.redirect('/')
-        }
+//         if (!user) {
+//             return res.redirect('/')
+//         }
 
-        req.logIn(user, function(err) {
-            if (err) {
-                return next(err)
-            }
+//         req.logIn(user, function(err) {
+//             if (err) {
+//                 return next(err)
+//             }
 
-            return res.redirect('/userHome')
-        })
+//             return res.redirect('/userHome')
+//         })
 
-    })(req, res, next)
-})
+//     })(req, res, next)
+// })
 
-app.get('/userHome',
-    (req, res) => res.sendFile('/public/userHome.html',
-    {root: __dirname})
-)
+// app.get('/userHome',
+//     (req, res) => res.sendFile('/public/userHome.html',
+//     {root: __dirname})
+// )
 
 //////////////////////////
 

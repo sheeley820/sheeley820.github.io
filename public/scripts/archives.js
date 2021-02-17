@@ -7,7 +7,7 @@ const buildArchiveElements = (archiveItem, needsPath) => {
 }
 
 let divider = document.getElementById("dropDiv")
-let herokuURL = "https://hidden-shore-45779.herokuapp.com/archive"
+let herokuURL = baseUrl
 // $.get(herokuURL, () => {
 // let listOfBlop
 //  do something with the response
@@ -32,7 +32,7 @@ window.onload = () => {
     const settings = {
         "async": true,
         "crossDomain": true,
-        "url": "https://hidden-shore-45779.herokuapp.com/archive",
+        "url": baseUrl,
         "method": "GET",
         "headers": {}
     };

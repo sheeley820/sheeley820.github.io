@@ -13,5 +13,3 @@ function buildHTML(postObject) {
       </div>
       `
 }
-
-module.exports = {buildHTML }

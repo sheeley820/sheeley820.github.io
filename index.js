@@ -48,13 +48,19 @@ client.connect(function(err) {
 
     buildArchiveElements()
 
-    app.path("/archive").get((req, res) => {
+    app.route("/archive").get((req, res) => {
         console.logList(`Params: ${req.query}`, `PostID: ${req.query.postID}`, `Request: ${req}`)
 
         if (req.query.postID) {
-            res.send(listOfBlogs.filter(post => post._id == req.query.postID))
+            let filteredBlog = listOfBlogs.filter(post => post._id == req.query.postID)
+            
+            if(filteredBlog.length == 1) {
+                res.send(filteredBlog[0])
+            } else {
+                res.send(listOfBlogs)
+            }
         } else {
-            res.send(listOfBlogs)
+            res.send({})
         }
     }).post((req, res) => {
         const post = buildBlogPostObject(req.body)

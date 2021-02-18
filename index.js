@@ -1,13 +1,19 @@
-const PORT = process.env.PORT || 5000;
 const express = require('express')
 const bodyParser = require("body-parser")
-const mongoose = require("mongoose")
 const mongodb = require("mongodb")
-let app = express()
-const url = process.env.MONGO_URI_BLOG
-let MongoClient = mongodb.MongoClient
-let {BlogPost, buildBlogPostObject} = require('./schema.js')
+const {buildBlogPostObject} = require('./schema.js')
 const bcrypt = require('bcrypt')
+
+const PORT = process.env.PORT || 5000;
+const URL = process.env.MONGO_URI_BLOG
+
+let app = express()
+let MongoClient = mongodb.MongoClient
+const DB_NAME = 'Videogameblog'
+const client = new MongoClient(URL);
+let listOfBlogs = {}
+let users = ["chris", "chris123"]
+
 const requestHeaderCallback = function(req, res, next) {
             let origin = req.headers.origin || '*';
             res.setHeader('Access-Control-Allow-Origin', origin);
@@ -15,52 +21,46 @@ const requestHeaderCallback = function(req, res, next) {
             next();
         }
 
-
-const dbName = 'Videogameblog'
-const client = new MongoClient(url);
-
-let listOfBlogs = {}
+console.logList = (...args) => {
+    for(arg of args) {
+        console.log(arg)
+    }
+}
 
 app.use(express.static(__dirname + "/public"),
         bodyParser.urlencoded({extended: true}),
         bodyParser.json(),
-        requestHeaderCallback,
+        requestHeaderCallback
 )
+
+app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"))
 
 client.connect(function(err) {
     console.log('Connected successfully to server');
   
-    const db = client.db(dbName);
-  
+    const db = client.db(DB_NAME);
     const archiveCollection = db.collection("archives")
-
     const buildArchiveElements = () => {
         archiveCollection.find({}).toArray(function(err, docs) {
-        listOfBlogs = docs
+            listOfBlogs = docs
         })
     }
+
     buildArchiveElements()
 
-    app.get("/archive", (req, res) => {
-        console.log(`Params: ${req.query}`)
-        console.log(`PostID: ${req.query.postID}`)
-        console.log(`Request: ${req}`)
-        if (!req.query.postID) {
-            res.send(listOfBlogs)
-        } else {
-            res.send(listOfBlogs.filter((post) => {
-                return post._id == req.query.postID
-            }))
-        }
-    })
+    app.path("/archive").get((req, res) => {
+        console.logList(`Params: ${req.query}`, `PostID: ${req.query.postID}`, `Request: ${req}`)
 
-    //endpoint to insert blogposts to db
-    app.post("/archive", (req, res) => {
+        if (req.query.postID) {
+            res.send(listOfBlogs.filter(post => post._id == req.query.postID))
+        } else {
+            res.send(listOfBlogs)
+        }
+    }).post((req, res) => {
         const post = buildBlogPostObject(req.body)
           
         archiveCollection.insertOne(post, function(err, result) {
-            console.log(result)
-            console.log("Inserted Document")
+            console.logList(result, "Inserted Document")
             if(result.result.ok == 1) {
                 res.json({
                     "result": "ok",
@@ -86,9 +86,8 @@ client.connect(function(err) {
             console.log(result)
 
             bcrypt.compare(req.body.password, result.password, function(err, passMatchResult){
-
                 if (result == null) {
-                    console.log("user not found")
+                    console.error("user not found")
                     res.sendStatus(400)
                 } else if(result.username && passMatchResult) {
                     console.log("username found")
@@ -119,18 +118,12 @@ client.connect(function(err) {
 
     })
 
-});
-
-app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"))
-
-let users = ["chris", "chris123"]
+})
 
 app.post('/userCheck', (req, res) => {
-    let user = req.body.userCheck
-    console.log(`User: ${user}`)
-    console.log(`Body:`)
-    console.log(req.body)
-    let lowUser = user.toLowerCase()
+    let lowUser = req.body.userCheck.toLowerCase()
+    console.logList(`User: ${req.body.userCheck}`, `Body:`, req.body)
+
     let isUser = users.find(item => item == lowUser)
     res.status(isUser ? 422 : 200)
     res.json({ "usernameIsValid" : !isUser })

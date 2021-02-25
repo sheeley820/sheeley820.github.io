@@ -4,7 +4,7 @@
   "description": "Our video game blog",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/jasmine/bin/jasmine.js",
     "start": "node index.js",
     "build": "browserify public/scripts/archives.js > public/scripts/bundle.js",
     "assemble": "npm run build && npm run start"
@@ -24,6 +24,7 @@
     "body-parser": "^1.19.0",
     "browserify": "^17.0.0",
     "express": "^4.17.1",
+    "jasmine": "^3.6.4",
     "mongodb": "^3.6.4",
     "mongoose": "^5.11.15"
   },

@@ -5,7 +5,7 @@ let blogList;
 const ajaxSettings = {
     "async": true,
     "crossDomain": true,
-    "url": BASE_URL,
+    "url": "/archive?postID=111",
     "method": "GET",
     "headers": {}
 };
@@ -14,7 +14,7 @@ window.onload = () => {
     $.ajax(ajaxSettings).done(function (response) {
         blogList = response
         let isTemplatePage = !document.documentURI.includes('Template')
-        blogList.forEach(() => {
+        blogList.forEach((item) => {
             DIVIDER.insertAdjacentHTML('afterend', buildArchiveElements(item, isTemplatePage))
         })
     });

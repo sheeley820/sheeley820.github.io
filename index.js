@@ -3,6 +3,10 @@ const bodyParser = require("body-parser")
 const mongodb = require("mongodb")
 const {buildBlogPostObject} = require('./schema.js')
 const bcrypt = require('bcrypt')
+const Strategy = require("passport-local").Strategy
+const passport = require('passport')
+const ObjectId = require('mongodb').ObjectID
+const expressSession = require('express-session')
 
 const PORT = process.env.PORT || 5000;
 const URL = process.env.MONGO_URI_BLOG
@@ -30,21 +34,58 @@ console.logList = (...args) => {
 app.use(express.static(__dirname + "/public"),
         bodyParser.urlencoded({extended: true}),
         bodyParser.json(),
-        requestHeaderCallback
+        requestHeaderCallback,
+        expressSession({ secret: 'keyboard cat', resave: false, saveUninitialized: false }),
+        passport.initialize(),
+        passport.session()
 )
 
 app.get("/", (req, res) => res.sendFile(__dirname + "/index.html"))
 
 client.connect(function(err) {
-    console.log('Connected successfully to server');
-  
+    
     const db = client.db(DB_NAME);
     const archiveCollection = db.collection("archives")
+    const userCollection = db.collection("users")
     const buildArchiveElements = () => {
         archiveCollection.find({}).toArray(function(err, docs) {
             listOfBlogs = docs
         })
     }
+    
+    passport.use(new Strategy(
+        function(username, password, cb) {
+            let userQuery = { "username" : username }
+            userCollection.findOne(userQuery), (response) => {
+            if (response == null) { return cb(null, false); }
+            //BCrypt
+            let passwordMatches = false;
+            bcrypt.compare(password, response.password, (err, passMatchResult) => {
+                if (err) console.log(err)
+                passMatches = passMatchResult
+            })
+
+            if (!passwordMatches) { return cb(null, false); }
+
+            return cb(null, user);
+          }
+        }
+    ))
+
+    passport.serializeUser(function(user, cb) {
+        cb(null, user.id);
+      });
+      
+      passport.deserializeUser(function(id, cb) {
+            let userQuery = { "_id" : new ObjectId(id) }
+            userCollection.findOne(userQuery), (response) => {
+            if (response == null) { return cb(null, false); }
+            return cb(null, user);
+          }
+      });
+    console.log('Connected successfully to server');
+  
+    
 
     buildArchiveElements()
 
@@ -83,8 +124,7 @@ client.connect(function(err) {
         archiveCollection.deleteMany({ })
     })
 
-    app.post('/login' , (req, res) => {
-        const userCollection = db.collection("users")
+    app.post('/login' ,   passport.authenticate('local', { failureRedirect: '/login' }), (req, res) => {
         userCollection.findOne({"username" : req.body.username}, function (err, result) {
             
             if (err) console.error(err)
@@ -123,7 +163,6 @@ client.connect(function(err) {
         })
 
     })
-
 })
 
 app.post('/userCheck', (req, res) => {

@@ -1,4 +1,5 @@
 const express = require('express')
+let app = express()
 const bodyParser = require("body-parser")
 const mongodb = require("mongodb")
 const {buildBlogPostObject} = require('./schema.js')
@@ -7,7 +8,6 @@ const bcrypt = require('bcrypt')
 const PORT = process.env.PORT || 5000;
 const URL = process.env.MONGO_URI_BLOG
 
-let app = express()
 let MongoClient = mongodb.MongoClient
 const DB_NAME = 'Videogameblog'
 const client = new MongoClient(URL);

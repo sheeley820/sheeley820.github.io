@@ -48,7 +48,7 @@ client.connect(function(err) {
 
     buildArchiveElements()
 
-    app.path("/archive").get((req, res) => {
+    app.route("/archive").get((req, res) => {
         console.logList(`Params: ${req.query}`, `PostID: ${req.query.postID}`, `Request: ${req}`)
 
         if (req.query.postID) {

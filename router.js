@@ -39,7 +39,7 @@ async function buildRouter(client) {
     router.get("/message", (req, res) => {
         res.json({ "message": "Hello!" })
     })
-
+    
     router.get("/archive", (req, res) => {
         // console.logList(`Params: ${req.query}`, `PostID: ${req.query.postID}`, `Request: ${req}`)
         if (req.query.postID) {
@@ -59,23 +59,23 @@ async function buildRouter(client) {
     })
     
     router.post("/archive", (req, res) => {
-        // const post = buildBlogPostObject(req.body)
-        console.table(req.data)
-        res.status(200).send({ "response": "Wahoo" })
-          
-        // archiveCollection.insertOne(post, function(err, result) {
-        //     // console.logList(result, "Inserted Document")
-        //     if(result.result.ok == 1) {
-        //         res.json({
-        //             "result": "ok",
-        //             "post": result.ops[0]
-        //         })
-        //     } else {
-        //         res.status(400)
-        //         res.send("Oops")
-        //     }
-        //     buildArchiveElements(archiveCollection)
-        // })
+        const post = buildBlogPostObject(req.body)
+        
+        archiveCollection.insertOne(post, function(err, result) {
+            console.log(`Result: ${result.ops[0]}`)
+            buildArchiveElements(archiveCollection)
+            if(result.result.ok == 1) {
+                res.status(200).json({
+                    "result": "ok",
+                    "post": result.ops[0]
+                })
+            } else {
+                res.status(400).json({
+                    "result": "error",
+                    "post": { "error": err}
+                })
+            }
+        })
     })
 
     return router

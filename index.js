@@ -80,18 +80,6 @@ client.connect(function(err) {
           }
       });
     console.log('Connected successfully to server');
-  
-    
-
-
-
-
-
-    //endpoint to delete all archive entries
-    app.delete('/deleteAllArchives', (req, res) => {
-        //removes ALL documents
-        archiveCollection.deleteMany({ })
-    })
 
     app.post('/login' ,   passport.authenticate('local', { failureRedirect: '/login' }), (req, res) => {
         userCollection.findOne({"username" : req.body.username}, function (err, result) {

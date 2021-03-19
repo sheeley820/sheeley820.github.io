@@ -11,6 +11,7 @@ const request = require("supertest");
 const mockData = require('../testData.json')
 process.env.DB_NAME = 'test'
 const BASE_PATH = "http://localhost:4000"
+const bodyParser = require("body-parser")
 
 
 describe('insert', () => {
@@ -24,6 +25,8 @@ describe('insert', () => {
         useUnifiedTopology: true
       }));
       await routerBuilder.buildRouter(connection).then(resolvedRouter => {
+        app.use(bodyParser.urlencoded({extended: true}),
+        bodyParser.json())
         app.use("/", resolvedRouter)
         server = app.listen(4000, () => console.log("Listening"))
         db = connection.db('test')
@@ -78,13 +81,11 @@ describe('insert', () => {
       date: Date.now()
     }
 
-    let expectedValues = {
-      "status": 200,
-      "text": "{\"response\":\"Wahoo\"}",
-    }
-
     function callback(data) {
-        expect(data).toMatchObject(expectedValues)
+        let returnedData = JSON.parse(data.text)
+        expect(returnedData.post.title).toEqual(post_data.title)
+        expect(returnedData.result).toEqual("ok")
+        expect(data.status).toEqual(200)
     }
 
     return request(app).post("/archive")
@@ -93,4 +94,6 @@ describe('insert', () => {
                 .send(post_data)
                 .then(callback)
   })
+
+  
 });

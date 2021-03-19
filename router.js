@@ -25,7 +25,7 @@ async function buildRouter(client) {
     
     router.delete('/deleteAllArchives', (req, res) => {
         //removes ALL documents
-        archiveCollection.deleteMany({ }, (result) => console.log(`Result: ${result}`))
+        archiveCollection.deleteMany({ }, () => "")
         res.status(200)
         res.send(200);
     })
@@ -35,6 +35,7 @@ async function buildRouter(client) {
     })
 
     router.get("/", (req, res) => res.sendFile(__dirname + "index.html"))
+
     router.get("/message", (req, res) => {
         res.json({ "message": "Hello!" })
     })
@@ -59,8 +60,8 @@ async function buildRouter(client) {
     
     router.post("/archive", (req, res) => {
         // const post = buildBlogPostObject(req.body)
-        console.table(req.body)
-        // console.table(post)
+        console.table(req.data)
+        res.status(200).send({ "response": "Wahoo" })
           
         // archiveCollection.insertOne(post, function(err, result) {
         //     // console.logList(result, "Inserted Document")

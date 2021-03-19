@@ -7,7 +7,7 @@ const express = require("express");
 const app = express();
 let routerBuilder = require('../router.js')
 let mongo = require('../mongo')
-const request = require("axios");
+const request = require("supertest");
 const mockData = require('../testData.json')
 process.env.DB_NAME = 'test'
 const BASE_PATH = "http://localhost:4000"
@@ -45,46 +45,52 @@ describe('insert', () => {
   })
 
   it('should get a message', async () => {
-    const response = await request.get(`${BASE_PATH}/message`)
-    expect(response.data).toEqual({ "message": "Hello!" })
+    const response = await request(app).get(`/message`)
+    expect(JSON.parse(response.text)).toEqual({ "message": "Hello!" })
   });
   
   it('should delete archves', async () => {
-    
-    let code = await request.delete(`${BASE_PATH}/deleteAllArchives`)
+    //Jest using async/await
+    let code = await request(app).delete(`/deleteAllArchives`)
      
     let result = await db.collection("archive").find({}).toArray()
+
     expect(result).toEqual([]);
     expect(code.status).toEqual(200)
   });
 
-  it("should retrieve an archive with the appropriate Id", async () => {
-    let response = await request.get(`${BASE_PATH}/archive?postID=123`)
+  it("should retrieve an archive with the appropriate Id", () => {
+    //Jest using promises
     let expected = {"_id": 123, "body": "lorem ipsum...", "date": "", "imgURL": "../images/reddeadimage.jpg", "tags": ["Red Dead Redemption", "First Person Shooter"], "title": "Red Dead Redemption Walkthrough"}
-    expect(response.data).toEqual(expected)
-    expect(response.status).toEqual(200)
+    
+    return request(app).get(`/archive?postID=123`).then(res => {
+      expect(JSON.parse(res.text)).toEqual(expected)
+      expect(res.status).toEqual(200)
+    })
   })
 
-  it("should add an item to archives", async () => {
-    let post_data = '{\n      title: "title",\n      body: "body",\n      imgURL: "img.com",\n      tags: "tag",\n      date: Date.now()\n    }'
-    const options = {
-      method: 'POST',
-      url: 'http://localhost:4000/archive',
-      headers: {'Content-Type': 'application/json',
-              'Content-Length': Buffer.byteLength(post_data)
-            },
-      data: post_data
-    };
-
-    let response = request.request(options).then(function (response) {
-          console.log(response.data);
-        }).catch(function (error) {
-          console.error(error);
-        });
-    let expected = {
-      "result": "ok",
-      "post": ""
+  it("should add an item to archives", () => {
+    let post_data = { 
+      title: "title",
+      body: "body",
+      imgURL: "img.com",
+      tags: "tag",
+      date: Date.now()
     }
-    expect(response.data).toEqual(expected)
+
+    let expectedValues = {
+      "status": 200,
+      "text": "{\"response\":\"Wahoo\"}",
+    }
+
+    function callback(data) {
+        expect(data).toMatchObject(expectedValues)
+    }
+
+    return request(app).post("/archive")
+                .timeout(10000)
+                .set('Content-Type', 'application/json')
+                .send(post_data)
+                .then(callback)
   })
 });

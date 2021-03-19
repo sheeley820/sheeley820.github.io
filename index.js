@@ -47,11 +47,7 @@ client.connect(function(err) {
     const db = client.db(DB_NAME);
     const archiveCollection = db.collection("archives")
     const userCollection = db.collection("users")
-    const buildArchiveElements = () => {
-        archiveCollection.find({}).toArray(function(err, docs) {
-            listOfBlogs = docs
-        })
-    }
+
     
     passport.use(new Strategy(
         function(username, password, cb) {
@@ -87,36 +83,9 @@ client.connect(function(err) {
   
     
 
-    buildArchiveElements()
 
-    app.route("/archive").get((req, res) => {
-        console.logList(`Params: ${req.query}`, `PostID: ${req.query.postID}`, `Request: ${req}`)
 
-        if (req.query.postID) {
-            let filteredBlog = listOfBlogs.filter(post => post._id == req.query.postID)
-            
-            if(filteredBlog.length == 1) {
-                res.send(filteredBlog[0])
-            } else {
-                res.send(listOfBlogs)
-            }
-        } else {
-            res.send({})
-        }
-    }).post((req, res) => {
-        const post = buildBlogPostObject(req.body)
-          
-        archiveCollection.insertOne(post, function(err, result) {
-            console.logList(result, "Inserted Document")
-            if(result.result.ok == 1) {
-                res.json({
-                    "result": "ok",
-                    "post": result.ops[0]
-                })
-            }
-            buildArchiveElements()
-        })
-    })
+
 
     //endpoint to delete all archive entries
     app.delete('/deleteAllArchives', (req, res) => {
@@ -174,9 +143,7 @@ app.post('/userCheck', (req, res) => {
     res.json({ "usernameIsValid" : !isUser })
 })
 
-app.post("/form", (req, res) => {
-    res.json(req.body)
-})
+
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
 

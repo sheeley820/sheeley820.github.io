@@ -1,0 +1,10 @@
+[
+  {
+    "_id": 123,
+    "tags": ["Red Dead Redemption", "First Person Shooter"],
+    "title": "Red Dead Redemption Walkthrough",
+    "body": "lorem ipsum...",
+    "imgURL": "../images/reddeadimage.jpg",
+    "date": ""
+  }
+]
